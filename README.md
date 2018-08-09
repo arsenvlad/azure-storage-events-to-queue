@@ -24,8 +24,8 @@ az group deployment create --resource-group avegs1 --template-file 2-ingest-stor
 ```
 export ak=$(az storage account keys list --resource-group avegs1 --account-name avegs1ingest --query "[0].value" -o tsv)
 
-az storage blob upload --account-name avegs1ingest --account-key "$ak" --container "ingestcontainer" --name create-queue.sh --file create-queue.sh
-az storage blob delete --account-name avegs1ingest --account-key "$ak" --container "ingestcontainer" --name create-queue.sh
+az storage blob upload --account-name avegs1ingest --account-key "$ak" --container "ingestcontainer" --name README.md --file README.md
+az storage blob delete --account-name avegs1ingest --account-key "$ak" --container "ingestcontainer" --name README.md
 
 az storage blob upload-batch --account-name avegs1ingest --account-key "$ak" --source "/mnt/c/temp" --destination "ingestcontainer/temp"
 az storage blob delete-batch --account-name avegs1ingest --account-key "$ak" --source "ingestcontainer" --pattern "temp/*"
