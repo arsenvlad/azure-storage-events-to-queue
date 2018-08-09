@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "eventGridSubscriptionName": {
+            "type": "string"
+        },
+        "queueStorageAccountResourceId": {
+            "type": "string"
+        },
+        "queueName": {
+            "type": "string"
+        },
+        "ingestStorageAccountName": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2018-03-01-preview",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('ingestStorageAccountName')]",
+            "location": "[parameters('location')]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2018-03-01-preview",
+                    "type": "blobServices/containers",
+                    "name": "[concat('default/','ingestcontainer')]",
+                    "dependsOn": [
+                        "[parameters('ingestStorageAccountName')]"
+                    ],
+                    "properties": {}
+                }
+            ]
+        },
+        {
+            "apiVersion": "2018-05-01-preview",
+            "type": "Microsoft.Storage/storageAccounts/providers/eventSubscriptions",
+            "name": "[concat(parameters('ingestStorageAccountName'),'/Microsoft.EventGrid/',parameters('eventGridSubscriptionName'))]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "destination": {
+                    "endpointType": "StorageQueue",
+                    "properties": {
+                        "resourceId": "[parameters('queueStorageAccountResourceId')]",
+                        "queueName": "[parameters('queueName')]"
+                    }
+                },
+                "filter": {
+                    "subjectBeginsWith": "",
+                    "subjectEndsWith": "",
+                    "isSubjectCaseSensitive": false,
+                    "includedEventTypes": ["All"]
+                },
+                "eventDeliverySchema": "InputEventSchema",
+                "retryPolicy": {
+                    "maxDeliveryAttempts": 30,
+                    "eventTimeToLiveInMinutes": 1440
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "ingestStorageAccountResourceId": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('ingestStorageAccountName'))]"
+        }
+    }
+}
