@@ -1,5 +1,10 @@
 # Azure Storage Events to Azure Queue Service
 
+0. Enable Event Grid resource provider for your subscription
+```
+az provider register --namespace Microsoft.EventGrid
+az provider show -n Microsoft.EventGrid
+```
 1. Create storage account for queue
 ```
 az group create --name avegs1 --location eastus2
@@ -7,7 +12,7 @@ az group deployment create --resource-group avegs1 --template-file 1-queue-stora
 ```
 2. Create queue (since it is not possible to create it via ARM template)
 ```
-az storage queue create --resource-group avegs1 --account-name avegs1
+az storage queue create --account-name avegs1 --name queue1
 
 queueStorageAccountResourceId=$(az storage account show --name avegs1 --resource-group avegs1 --query id --output tsv)
 ```
