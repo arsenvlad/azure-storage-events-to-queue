@@ -25,3 +25,4 @@ az storage blob delete --account-name avegs1ingest --account-key "$ak" --contain
 az storage blob upload-batch --account-name avegs1ingest --account-key "$ak" --source "/mnt/c/temp" --destination "ingestcontainer/temp"
 az storage blob delete-batch --account-name avegs1ingest --account-key "$ak" --source "ingestcontainer" --pattern "temp/*"
 ```
+5. View queue contents in https://portal.azure.com
