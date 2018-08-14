@@ -31,3 +31,10 @@ az storage blob upload-batch --account-name avegs1ingest --account-key "$ak" --s
 az storage blob delete-batch --account-name avegs1ingest --account-key "$ak" --source "ingestcontainer" --pattern "temp/*"
 ```
 5. View queue contents in https://portal.azure.com
+
+## Scale Experiments
+
+Create many event subscriptions for same storage account
+```
+az group deployment create --resource-group avegs1 --template-file 3-ingest-storage-many-event-subscriptions.json
+```
