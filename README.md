@@ -34,7 +34,24 @@ az storage blob delete-batch --account-name avegs1ingest --account-key "$ak" --s
 
 ## Scale Experiments
 
-Create many event subscriptions for same storage account
+Create many event subscriptions for same storage account (use minimum of 5 since that's the batch size in the template) to see if it possible to create more than 500 event subscriptions on each account.
 ```
 az group deployment create --resource-group avegs1 --template-file 3-ingest-storage-many-event-subscriptions.json
+```
+
+After about ~505 event subscriptions getting the following error. This is expected based on the documentation of current limit of "500 event subscriptions per topic" https://docs.microsoft.com/en-us/azure/azure-subscription-service-limits#azure-event-grid-limits
+
+Deployment failed. Correlation ID: bf6e4a31-62aa-4794-b11c-647d2a73fb3a. 
+```json
+{
+  "error": {
+    "code": "ResourceConflict",
+    "message": "Quota limit reached."
+  }
+}
+```
+
+Create many storage accounts and one event subscription for each to see if possible to create more than 100 storage accounts as topics
+```
+az group deployment create --resource-group avegs1 --template-file 4-many-ingest-storage-accounts-event-subscription.json
 ```
