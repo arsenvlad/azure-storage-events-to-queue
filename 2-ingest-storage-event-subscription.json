@@ -48,6 +48,9 @@
             "type": "Microsoft.Storage/storageAccounts/providers/eventSubscriptions",
             "name": "[concat(parameters('ingestStorageAccountName'),'/Microsoft.EventGrid/',parameters('eventGridSubscriptionName'))]",
             "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/',parameters('ingestStorageAccountName'))]"
+            ],
             "properties": {
                 "destination": {
                     "endpointType": "StorageQueue",
